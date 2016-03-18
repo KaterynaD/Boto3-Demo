@@ -1,0 +1,12 @@
+RedshiftCluster:
+  DBName: "supportdw"
+  ClusterIdentifier: "Support"
+  MasterUsername: "masteruser"
+  MasterUserPassword: "Kaktus2015"
+  Port: "5439"
+Region: "us-west-2"
+SQLsFolder: "report-sql/"
+Topic:
+  Name: "SystemStatus"
+Queue:
+  Name: "SystemStatus"

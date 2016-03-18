@@ -1,0 +1,39 @@
+{
+"Tables": 
+	[ {"name" : "d_analysts",
+	  "description" : "SCD type 2",
+	  "scripts" : {"create" : {"file": "sql/create_d_analysts.sql"},
+				 "load" : {"file": "sql/build_scdt2_d_analysts.sql"},
+				 "drop" : {"file": "sql/drop_table.sql",
+				           "StopOnError": "False"}}},
+	  {"name" : "d_products",
+	  "description" : "flatten hierarchy dimension",
+	  "scripts" : {"create" : {"file": "sql/create_d_products.sql"},
+				 "load" : {"file": "sql/flatten_hierar_d_products.sql"},
+				 "drop" : {"file": "sql/drop_table.sql",
+				           "StopOnError": "False"}}},
+	  {"name" : "d_calendar",
+	  "description" : "Calendar dimension as is. No transformation required",
+	  "scripts" : {"create" : {"file": "sql/create_d_calendar.sql"},
+				 "load" : {"file": "sql/copy_calendar.sql"},
+				 "drop" : {"file": "sql/drop_table.sql",
+				           "StopOnError": "False"}}},	
+	  {"name" : "d_priorities",
+	  "description" : "Priority and SLA dimenaion as is. No transformation required",
+	  "scripts" : {"create" : {"file": "sql/create_d_priorities.sql"},
+				 "load" : {"file": "sql/copy_priorities.sql"},
+				 "drop" : {"file": "sql/drop_table.sql",
+				           "StopOnError": "False"}}},
+	  {"name" : "f_cases",
+	  "description" : "cases fact table",
+	  "scripts" : {"create" : {"file": "sql/create_f_cases.sql"},
+				 "load" : {"file": "sql/insert_f_cases.sql"},
+				 "drop" : {"file": "sql/drop_table.sql",
+				           "StopOnError": "False"}}}						   
+	],
+"Placeholders" :
+[ 
+  {"name": "#bucket#",
+  "value":"kdsupportdata"}
+  ]
+}

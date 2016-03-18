@@ -1,0 +1,171 @@
+
+---
+VPC:
+  CidrBlock: 10.0.0.0/16
+  Instance:
+    -
+      AssociatePublicIpAddress: "True"
+      DeleteOnTermination: "True"
+      DeviceIndex: "0"
+      IamInstanceProfileName: InstanceAdminRole
+      ImageId: ami-f0091d91
+      InstanceInitiatedShutdownBehavior: stop
+      InstanceType: t2.micro
+      KeyName: aws-csa
+      Name: Web
+      SecurityGroup: WebGroup
+      UserData: WebInstanceUserData.bash
+    -
+      AssociatePublicIpAddress: "False"
+      DeleteOnTermination: "True"
+      DeviceIndex: "0"
+      IamInstanceProfileName: InstanceAdminRole
+      ImageId: ami-f0091d91
+      InstanceInitiatedShutdownBehavior: stop
+      InstanceType: t2.micro
+      KeyName: aws-csa
+      Name: App
+      SecurityGroup: AppGroup
+      UserData: AppInstanceUserData.bash
+    -
+      AssociatePublicIpAddress: "True"
+      DeleteOnTermination: "True"
+      DeviceIndex: "0"
+      IamInstanceProfileName: InstanceAdminRole
+      ImageId: ami-290f4119
+      InstanceInitiatedShutdownBehavior: stop
+      InstanceType: t2.micro
+      KeyName: aws-csa
+      Name: Nat
+      SecurityGroup: NatGroup
+      UserData:
+  Name: Test
+  SecurityGroup:
+    -
+      Description: "To access the instance via SSH and web"
+      InboundRules: "SSH,CustomTCPRule8080"
+      Name: WebGroup
+      OutboundRules: ""
+    -
+      Description: "To access the instance via SSH"
+      InboundRules: SSH
+      Name: AppGroup
+      OutboundRules: ""
+    -
+      Description: "To access Redshift cluster"
+      InboundRules: Redshift5439All
+      Name: RedshiftAll
+      OutboundRules: ""
+    -
+      Description: "To allow traffic thru Nat instance"
+      InboundRules: "NatHTTP,NatHTTPS"
+      Name: NatGroup
+      OutboundRules: ""
+  SecurityGroupRules:
+    -
+      CidrIp: 0.0.0.0/0
+      FromPort: "22"
+      IpProtocol: TCP
+      Name: SSH
+      ToPort: "22"
+    -
+      CidrIp: 0.0.0.0/0
+      FromPort: "8080"
+      IpProtocol: TCP
+      Name: CustomTCPRule8080
+      ToPort: "8080"
+    -
+      CidrIp: 0.0.0.0/0
+      FromPort: "5439"
+      IpProtocol: TCP
+      Name: Redshift5439All
+      ToPort: "5439"
+    -
+      CidrIp: 10.0.1.0/24
+      FromPort: "80"
+      IpProtocol: TCP
+      Name: NatHTTP
+      ToPort: "80"
+    -
+      CidrIp: 10.0.1.0/24
+      FromPort: "443"
+      IpProtocol: TCP
+      Name: NatHTTPS
+      ToPort: "443"
+  Subnet:
+    -
+      AvailabilityZone: us-west-2a
+      CidrBlock: 10.0.1.0/24
+      Name: Private1
+      isPublic: "False"
+    -
+      AvailabilityZone: us-west-2b
+      CidrBlock: 10.0.2.0/24
+      Name: Public1
+      isPublic: "True"
+    -
+      AvailabilityZone: us-west-2c
+      CidrBlock: 10.0.3.0/24
+      Name: Public2
+      isPublic: "True"
+RedshiftCluster:
+  Endpoint:
+  DBName: "supportdw"
+  ClusterIdentifier: "Support"
+  ClusterType: "single-node"
+  NodeType: "dc1.large"
+  MasterUsername: "masteruser"
+  MasterUserPassword: "Kaktus2015"
+  Port: "5439"
+  PubliclyAccessible: "False"
+  Encrypted: "False"
+  SubnetGroup:
+      Name: "testvpcprivate"
+      Description: "Private Subnets in Test VPC"
+      VPC: "Test"
+      SecurityGroup: "RedshiftAll"
+Region: "us-west-2"
+Topic:
+  Name: "SystemStatus"
+Queue:
+  Name: "SystemStatus"
+LB:
+  Name: "TestLB"
+  Protocol: "HTTP"
+  LoadBalancerPort: "8080"
+  InstanceProtocol: "HTTP"
+  InstancePort: "8080"
+  Target: "HTTP:8080/"
+  Interval: "10"
+  Timeout: "5"
+  UnhealthyThreshold: "2"
+  HealthyThreshold: "3"
+AutoScaling:
+  Name: "TestAS"
+  MinSize: "1"
+  MaxSize: "3"
+  DesiredCapacity:  "2"
+  DefaultCooldown:  "300"
+  HealthCheckType: "ELB"
+  HealthCheckGracePeriod: "300"
+  MetricName: "CPUUtilization"
+  Statistic: "Average"
+  Period: "60"
+  ThresholdScaleDown: "40"
+  ThresholdScaleUp: "70"
+  EvaluationPeriods: "2"
+  Unit: "Percent"
+  Namespace: "AWS/EC2"
+IAM:
+  TempBucketAccessRole: 
+    Name: "TempBucketsAccessRole"
+    Basic_Policy: "{'Statement': [{'Effect': 'Allow','Principal': {'AWS': 'arn:aws:iam::123:root'},'Action': 'sts:AssumeRole'}]}"
+    Other_Policies: "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+  InstanceRole: 
+    Name: "InstanceAdminRole"
+    Basic_Policy: "{'Statement': [{'Principal': {'Service': ['ec2.amazonaws.com']},'Effect': 'Allow','Action': ['sts:AssumeRole']}]}"
+    Other_Policies: "arn:aws:iam::aws:policy/AmazonEC2FullAccess,arn:aws:iam::aws:policy/AdministratorAccess"
+  AccessPolicy: 
+    Name: "assume-policy"
+    Policy_doc: "{'Version': '2012-10-17','Statement': [{'Effect': 'Allow','Action': 'sts:AssumeRole','Resource': '*'}]}"
+    Description: "To temporary provide access Redshift to S3 buckets"

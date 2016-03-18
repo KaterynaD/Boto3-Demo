@@ -1,0 +1,20 @@
+Region: "us-west-2"
+DWDataGeneration:
+  StartYear: "2010"
+  Num_Analysts: "200"
+  Num_Cases: "100"
+  Num_Products: "1000"
+  Num_Years: "5"
+  PrioritySLAFile: "data/HistoricalData/PrioritySLA.csv"
+HistoricalDataFiles:
+  Bucket: "kdsupportdata"
+  LocalDir: "data/HistoricalData"
+  FilesFilter: "*.csv"
+NewDataFiles:
+  Bucket: "kdsupportdatanew"
+  LocalDir: "data/NewData"
+  FilesFilter: "*.csv"
+Topic:
+  Name: "SystemStatus"
+Queue:
+  Name: "SystemStatus"

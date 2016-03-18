@@ -1,0 +1,26 @@
+HistoricalDataFiles:
+  Bucket: "kdsupportdata"
+  LocalDir: "data/HistoricalData"
+  FilesFilter: "*.csv"
+NewDataFiles:
+  Bucket: "kdsupportdatanew"
+  LocalDir: "data/NewData"
+  FilesFilter: "*.csv"
+RedshiftCluster:
+  DBName: "supportdw"
+  ClusterIdentifier: "Support"
+  MasterUsername: "masteruser"
+  MasterUserPassword: "Kaktus2015"
+  Port: "5439"
+DWDescription:
+  HistoricalData: "StagingArea.json"
+  DW: "SupportDW.json"
+  NewData: "NewDataForLoad.json"
+  DW_NewData: "SupportDW_NewData.json"
+Region: "us-west-2"
+Access:
+  RoleArn: "arn:aws:iam::757107622481:role/TempBucketsAccessRole"
+Topic:
+  Name: "SystemStatus"
+Queue:
+  Name: "SystemStatus"

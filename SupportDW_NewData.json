@@ -1,0 +1,17 @@
+{
+"Tables":
+        [ {"name" : "d_analysts",
+          "description" : "SCD type 2",
+          "scripts" : {"create" : {"file": "sql/create_d_analysts.sql"},
+                                 "load" : {"file": "sql/merge_scdt2_d_analysts.sql"},
+                                 "drop" : {"file": "sql/drop_table.sql",
+				           "StopOnError": "False"}}},
+          {"name" : "f_cases",
+          "description" : "cases fact table",
+          "scripts" : {"create" : {"file": "sql/create_f_cases.sql"},
+                                 "load" : {"file": "sql/merge_f_cases.sql"},
+                                 "drop" : {"file": "sql/drop_table.sql",
+				           "StopOnError": "False"}}}
+        ]
+}
+

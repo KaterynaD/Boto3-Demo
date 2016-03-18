@@ -1,0 +1,29 @@
+{
+"Tables":
+        [
+      {"name" : "analysts",
+          "description" : "Current analysts snapshot",
+          "scripts" : {"create" : {"file": "sql/create_analysts_yyyy.sql"},
+                                 "load" : {"file": "sql/copy_data.sql"},
+                                 "drop" : {"file": "sql/drop_table.sql",
+						                   "StopOnError": "False"}}},
+          {"name" : "cases",
+          "description" : "Current Cases data",
+          "scripts" : {"create" : {"file": "sql/create_cases.sql"},
+                                 "load" : {"file": "sql/copy_data.sql"},
+                                 "drop" : {"file": "sql/drop_table.sql",
+						                   "StopOnError": "False"}}},
+          {"name" : "logs",
+          "description" : "current cases logs",
+          "scripts" : {"create" : {"file": "sql/create_logs.sql"},
+                                 "load" : {"file": "sql/copy_data.sql"},
+                                 "drop" : {"file": "sql/drop_table.sql",
+						   "StopOnError": "False"}}}
+        ],
+"Placeholders" :
+[
+  {"name": "#bucket#",
+  "value":"kdsupportdatanew"}
+  ]
+}
+
